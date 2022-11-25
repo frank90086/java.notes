@@ -226,6 +226,103 @@
     ```cmd
     mvn clean compile
     ```
+- [JPA](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#preface)
+  - Configuration
+    - Maven
+        ```xml
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+        ```
+    - application
+        ```yml
+        spring:
+            datasource:
+                url: jdbc:mysql://127.0.0.1:3306/{mydb}?useSSL=false&autoReconnect=true
+                username: root
+                password: root
+            jpa:
+                show-sql: true # 顯示SQL語法
+                properties:
+                    hibernate:
+                        format_sql: true # format SQL語法
+                    hbm2ddl:
+                        auto: create-drop # (此參數請小心使用) create | create-drop | update | validate
+        logging:
+            level:
+                org:
+                    hibernate: # 顯示SQL語法的查詢條件的值
+                        SQL: DEBUG
+                        type:
+                            descriptor:
+                                sql:
+                                    BasicBinder: TRACE
+        ```
+  - Auditing
+    - Application class add @EnableJpaAuditing
+    - Entity class add @EntityListeners(AuditingEntityListener.class)
+    - Implement AuditorAware<String>
+        ```java
+        import net.funpodium.service.bo.util.InheritableThreadLocalUtil;
+        import org.springframework.context.annotation.Configuration;
+        import org.springframework.data.domain.AuditorAware;
+
+        import java.util.Optional;
+
+        @Configuration
+        public class AuditorAwareImpl implements AuditorAware<String> {
+
+            @Override
+            public Optional<String> getCurrentAuditor() {
+                /* Implement get current auditor */
+            }
+        }
+        ```
+    - Entity class add properties
+      - Created Date
+        ```java
+        @CreatedDate
+        private Timestamp CreatedDate;
+        ```
+      - Created By
+        ```java
+        @CreatedBy
+        private String createdBy;
+        ```
+      - Last Modified Date
+        ```java
+        @LastModifiedDate
+        private Timestamp LastModifiedDate;
+        ```
+      - Last Modified By
+        ```java
+        @LastModifiedBy
+        private String LastModifiedBy;
+        ```
+  - Properties
+    - CascadeType
+        |Options|Describe|
+        |:--|:--|
+        |CascadeType.PERSIST|在儲存時一併儲存 被參考的物件|
+        |CascadeType.MERGE|在合併修改時一併 合併修改被參考的物件|
+        |CascadeType.REMOVE|在移除時一併移除 被參考的物件|
+        |CascadeType.REFRESH|在更新時一併更新 被參考的物件|
+        |CascadeType.ALL|一併對被參考物件作出對應動作|
+    - FetchType
+      - Definition
+        |Options|Describe|
+        |:--|:--|
+        |FetchType.EARGE|立即載入|
+        |FetchType.LAZY|延遲載入|
+      - Default
+        |Relationship|Default|
+        |:--|:--|
+        |@Basic|FetchType.EARGE|
+        |@OneToOne|FetchType.EARGE|
+        |@ManyToOne|FetchType.EARGE|
+        |@OneToMany|FetchType.LAZY|
+        |@ManyToMany|FetchType.LAZY|
 
 ### DevOps
 - [Drone](https://www.drone.io/)
