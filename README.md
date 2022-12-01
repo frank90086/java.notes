@@ -140,8 +140,8 @@
   - [五分鐘學會 Lombok 用法](https://matthung0807.blogspot.com/2020/12/mac-homebrew-intall-maven.html)
 - Annotation
   - java.lang
-    > https://openhome.cc/Gossip/Java/Annotation.html  
-    > https://openhome.cc/Gossip/Java/CustomizeAnnotation.html
+    > [Annotation](https://openhome.cc/Gossip/Java/Annotation.html)  
+    > [CustomizeAnnotation](https://openhome.cc/Gossip/Java/CustomizeAnnotation.html)
     - @Override
     - @Deprecated
     - @SuppressWarnings
@@ -323,6 +323,65 @@
         |@ManyToOne|FetchType.EARGE|
         |@OneToMany|FetchType.LAZY|
         |@ManyToMany|FetchType.LAZY|
+- AOP
+  > [切面導向程式設計](https://chikuwa-tech-study.blogspot.com/2021/06/spring-boot-aop-introduction.html)
+
+  - Configuration
+    ```xml
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-aop</artifactId>
+    </dependency>
+    ```
+  - Declare
+    ```java
+    @Aspect
+    public class LogAspect {
+
+        /*
+        Return rule: *
+        Package rule(include sub package): xxx.service..*
+        Package rule(exclude sub package): xxx.service.*
+        Method rule: .*
+        Parameter rule: (..) | (String,..)
+        */
+        @Pointcut("execution(* xxx.service..*.*(..))")
+        public void pointcut() {
+        }
+
+        @Before("pointcut()")
+        public void before(JoinPoint joinPoint) {
+            // Before method invoke
+        }
+
+        @After("pointcut()")
+        public void after(JoinPoint joinPoint) {
+            // After method invoke
+        }
+
+        @AfterReturning(pointcut = "pointcut()", returning = "result")
+        public void afterReturning(JoinPoint joinPoint, Object result) {
+            // After method invoke and return
+            // If exception occured before return, then this section won't excuted
+        }
+
+        @Around("pointcut()")
+        public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
+
+            // Logic before method invoke
+            Object result = joinPoint.proceed();
+            // Logic after method invoke
+
+            return result;
+        }
+
+        @AfterThrowing(pointcut = "pointcut()", throwing = "throwable")
+        public void afterThorwing(JoinPoint joinPoint, Throwable throwable) {
+            // Error exception occured
+        }
+
+    }
+    ```
 
 ### DevOps
 - [Drone](https://www.drone.io/)
