@@ -1,8 +1,24 @@
 ## To Learn List
+### Menu
+- [To Learn List](#to-learn-list)
+  - [Menu](#menu)
+  - [Java](#java)
+    - [Maven](#maven)
+    - [lombok](#lombok)
+    - [Annotation](#annotation)
+    - [querydsl](#querydsl)
+    - [JPA](#jpa)
+    - [AOP](#aop)
+  - [DevOps](#devops)
+    - [Drone](#drone)
+  - [Troubelshooting](#troubelshooting)
+    - [IntelliJ IDE Relevant](#intellij-ide-relevant)
+    - [Maven Relevant](#maven-relevant)
 ### Java
-- [Maven](https://maven.apache.org/index.html)
-    > [教學](https://kentyeh.github.io/mavenStartup/)
-  - Configuration
+#### Maven
+> [Official](https://maven.apache.org/index.html)  
+> [Tutorial](https://kentyeh.github.io/mavenStartup/)
+- Configuration
     - [Compiler plugin](https://maven.apache.org/plugins/maven-compiler-plugin/index.html)
         ```xml
         <plugin>
@@ -102,7 +118,7 @@
         ```
     - [Scm plugin](https://maven.apache.org/scm/maven-scm-plugin/)
     - [Profile](https://maven.apache.org/guides/introduction/introduction-to-profiles.html)
-  - [Properties](https://books.sonatype.com/mvnref-book/reference/resource-filtering-sect-properties.html)
+- [Properties](https://books.sonatype.com/mvnref-book/reference/resource-filtering-sect-properties.html)
     |Property|Describe|
     |:--|:--|
     |${basedir}|表示包含pom.xml的目錄路徑|
@@ -114,11 +130,11 @@
     |${project.build.finalName}|Project的打包名稱|
     |${env.M2_HOME}|maven安裝目錄|
     |${java.home}|Java安裝目錄|
-  - Lifecycle
+- Lifecycle
     - [clean](https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html#clean-lifecycle)
     - [default](https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html#default-lifecycle)
     - [site](https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html#site-lifecycle)
-  - Commonly used commands
+- Commonly used commands
     |Command|Describe|
     |:--|:--|
     |mvn clean|進行清理作業，通常是將${project.build.directory} 砍掉|
@@ -166,12 +182,13 @@
         *,!repo1 = everything except repo1
         central = default repository
         ```
-- [lombok](https://projectlombok.org/)
+#### [lombok]()
+> [Commercail](https://projectlombok.org/)
   - [五分鐘學會 Lombok 用法](https://matthung0807.blogspot.com/2020/12/mac-homebrew-intall-maven.html)
-- Annotation
+#### Annotation
     > [Spring Boot 常用註釋(上)](https://ithelp.ithome.com.tw/articles/10269631)  
     > [Spring Boot 常用註釋(下)](https://ithelp.ithome.com.tw/articles/10270418)
-  - java.lang
+- java.lang
     > [Annotation](https://openhome.cc/Gossip/Java/Annotation.html)  
     > [CustomizeAnnotation](https://openhome.cc/Gossip/Java/CustomizeAnnotation.html)
     - @Override
@@ -216,12 +233,12 @@
             }
         }
         ```
-  - java.lang.annotation
+- java.lang.annotation
     - @Retention
     - @Documented
     - @Target
     - @Inherited
-  - Controller
+- Controller
     - @Controller
     - @RestController
         > @ResponseBody + @Controller
@@ -259,7 +276,7 @@
         @RequestMapping(value = "/path/{PATH_PARAM}", method = RequestMethod.GET)
         public String pathBinding(@PathVariable("PATH_PARAM") String path_param) { /* 略 */ }
         ```
-  - Bean
+- Bean
     - @Service
     - @Repository
     - @Component
@@ -300,7 +317,7 @@
             }
         }
         ```
-  - Schedule
+- Schedule
     - @EnableScheduling
     - @Scheduled
         > Providers: cron, fixedDelay, fixedRate...etc.
@@ -309,7 +326,7 @@
         @Scheduled(cron = "0 0 12 * * ?")
         public void task1() { /* 略 */ }
         ```
-  - AOP
+- AOP
     - @Aspec
     - @Pointcut
     - @Before
@@ -317,7 +334,7 @@
     - @AfterReturning
     - @Around
     - @AfterThrowing
-  - Other
+- Other
     - @EnableAsync
     - @SpringBootTest
     - @Test
@@ -326,8 +343,9 @@
         @Transactional(rollbackFor = Exception.class)
         public void method() { /* 略 */}
         ```
-- [querydsl](http://querydsl.com/)
-  - Maven config
+#### querydsl
+> [Official](http://querydsl.com/)
+- Maven config
     ```xml
     <properties>
         <querydsl.version>4.2.1</querydsl.version>
@@ -365,12 +383,13 @@
         </dependency>
     </dependencies>
     ```
-  - build
+- build
     ```cmd
     mvn clean compile
     ```
-- [JPA](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#preface)
-  - Configuration
+#### JPA
+> [Official](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#preface)
+- Configuration
     - Maven
         ```xml
         <dependency>
@@ -402,7 +421,7 @@
                                 sql:
                                     BasicBinder: TRACE
         ```
-  - Auditing
+- Auditing
     - Application class add @EnableJpaAuditing
     - Entity class add @EntityListeners(AuditingEntityListener.class)
     - Implement AuditorAware<String>
@@ -443,7 +462,7 @@
         @LastModifiedBy
         private String LastModifiedBy;
         ```
-  - Properties
+- Properties
     - CascadeType
         |Options|Describe|
         |:--|:--|
@@ -466,17 +485,17 @@
         |@ManyToOne|FetchType.EARGE|
         |@OneToMany|FetchType.LAZY|
         |@ManyToMany|FetchType.LAZY|
-- AOP
+#### AOP
   > [切面導向程式設計](https://chikuwa-tech-study.blogspot.com/2021/06/spring-boot-aop-introduction.html)
 
-  - Configuration
+- Configuration
     ```xml
     <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-aop</artifactId>
     </dependency>
     ```
-  - Declare
+- Declare
     ```java
     @Aspect
     public class LogAspect {
@@ -527,14 +546,14 @@
     ```
 
 ### DevOps
-- [Drone](https://www.drone.io/)
+#### [Drone](https://www.drone.io/)
   - [從零開始學 DevOps — 那就選擇最簡單的 Drone CI 開始吧！](https://medium.com/starbugs/%E5%BE%9E%E9%9B%B6%E9%96%8B%E5%A7%8B%E5%AD%B8-devops-%E9%82%A3%E5%B0%B1%E9%81%B8%E6%93%87%E6%9C%80%E7%B0%A1%E5%96%AE%E7%9A%84-drone-ci-%E9%96%8B%E5%A7%8B%E5%90%A7-931126671139)
 
 ### Troubelshooting
-- IntelliJ IDE
-  - [Unable to use Intellij with a generated sources folder](https://stackoverflow.com/questions/5170620/unable-to-use-intellij-with-a-generated-sources-folder)
-- Maven
-  - Maven Build Failure
+#### IntelliJ IDE Relevant
+- [Unable to use Intellij with a generated sources folder](https://stackoverflow.com/questions/5170620/unable-to-use-intellij-with-a-generated-sources-folder)
+#### Maven Relevant
+- Maven Build Failure
     - DependencyResolutionException
       - [Getting "Blocked mirror for repositories" maven error even after adding mirrors](https://stackoverflow.com/questions/67833372/getting-blocked-mirror-for-repositories-maven-error-even-after-adding-mirrors)
       - [Blocked mirror for repositories error when building from source using Maven 3.8.1 or later](https://backstage.forgerock.com/knowledge/kb/article/a15127846)
