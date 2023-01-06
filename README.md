@@ -138,7 +138,7 @@
     |mvn dependency:tree|查看Library版本|
   - Mirror
     - [Settings](https://maven.apache.org/guides/mini/guide-mirror-settings.html)
-        > /usr/local/Cellar/maven/3.8.6/libexec/conf/settings.xml
+        > /usr/local/Cellar/maven/3.8.6/libexec/conf/settings.xml  
         > ~/.m2/settings.xml
         ```xml
         <mirrors>
