@@ -136,15 +136,53 @@
     |mvn versions:display-dependency-updates|檢查函式庫更新狀況|
     |mvn versions:display-plugin-updates|檢查Plugin的更新狀況|
     |mvn dependency:tree|查看Library版本|
+  - Mirror
+    - [Settings](https://maven.apache.org/guides/mini/guide-mirror-settings.html)
+        > /usr/local/Cellar/maven/3.8.6/libexec/conf/settings.xml
+        > ~/.m2/settings.xml
+        ```xml
+        <mirrors>
+            <mirror>
+                <id>maven-default-http-blocker</id>
+                <mirrorOf>external:http:*</mirrorOf>
+                <name>Pseudo repository to mirror external repositories initially using HTTP.</name>
+                <url>http://0.0.0.0/</url>
+                <blocked>true</blocked>
+            </mirror>
+            <mirror>
+                <id>nexus</id>
+                <mirrorOf>central</mirrorOf>
+                <name>nexus</name>
+                <url>http://52.69.65.57/repository/backend-maven-all/</url>
+                <blocked>false</blocked>
+            </mirror>
+        </mirrors>
+        ```
+    - mirrorOf
+        ```text
+        * = everything
+        external:* = everything not on the localhost and not file based.
+        repo,repo1 = repo or repo1
+        *,!repo1 = everything except repo1
+        central = default repository
+        ```
 - [lombok](https://projectlombok.org/)
   - [五分鐘學會 Lombok 用法](https://matthung0807.blogspot.com/2020/12/mac-homebrew-intall-maven.html)
 - Annotation
+    > [Spring Boot 常用註釋(上)](https://ithelp.ithome.com.tw/articles/10269631)  
+    > [Spring Boot 常用註釋(下)](https://ithelp.ithome.com.tw/articles/10270418)
   - java.lang
     > [Annotation](https://openhome.cc/Gossip/Java/Annotation.html)  
     > [CustomizeAnnotation](https://openhome.cc/Gossip/Java/CustomizeAnnotation.html)
     - @Override
     - @Deprecated
+        > Method obsolete
     - @SuppressWarnings
+        > Ignore warning
+        ```java
+        // 告訴編譯器忽略unchecked 和deprecation 警告訊息
+        @SuppressWarnnings("unchecked", "deprecation")
+        ```
     - @SafeVarag
     - @FunctionalInterface
         ```java
@@ -183,6 +221,111 @@
     - @Documented
     - @Target
     - @Inherited
+  - Controller
+    - @Controller
+    - @RestController
+        > @ResponseBody + @Controller
+    - @RequestMapping
+      - value
+        > Specific path
+      - method
+        > Specific http methods
+      - consumes
+        > Specific request Content-Type
+      - produces
+        > Specific response Content-Type
+      - headers
+        > Specific request headers
+      - params
+        > Specific request parameters
+    - @RequestBody
+    - @ResponseBody
+    - @ModelAttribute
+        ```java
+        public String modelBinding(@ModelAttribute Member member) { /* 略 */ }
+        ```
+    - @SessionAttribute
+        ```java
+        public String sessionBinding(@SessionAttribute("SESSION_NAME") Member member) { /* 略 */ }
+        ```
+    - @RequestParam
+        ```java
+        public String paramBinding(
+            @RequestParam(value = "param1") String param1,
+            @RequestParam(value = "param2", required = false) String param2) { /* 略 */ }
+        ```
+    - @PathVariable
+        ```java
+        @RequestMapping(value = "/path/{PATH_PARAM}", method = RequestMethod.GET)
+        public String pathBinding(@PathVariable("PATH_PARAM") String path_param) { /* 略 */ }
+        ```
+  - Bean
+    - @Service
+    - @Repository
+    - @Component
+        > Exclude @Service, @Repository
+    - @ComponentScan
+    - @Configuration
+    - @Bean
+    - @Resource
+        > DI by name  
+    - @Autowired
+        > DI by type
+    - @Qualifier
+        > Specific when mutiple type declared simultaneously
+    - @Value
+  - Exception
+    - @ControllerAdvice
+        >  @RestControllerAdvice
+    - @ExceptionHandler
+        ```java
+        // 限定註釋為RestController 生效
+        // @ControllerAdvice(annotations = RestController.class)
+        // 限定xxx.controller Package 下生效
+        // @ControllerAdvice("xxx.controller")
+        // 限定Controller1 與Controller2 生效
+        // @ControllerAdvice(assignableTypes = {Controller1.class, Controller2.class})
+        @ControllerAdvice
+        public class ExceptionHandler {
+            // 處理NullPointerException 例外
+            @ExceptionHandler(NullPointerException.class)
+            public String NullPointerExceptionHandler() {
+                // 略
+            }
+
+            // 處理ArithmeticException 和ArrayIndexOutOfBoundsException 例外
+            @ExceptionHandler({ArithmeticException.class, ArrayIndexOutOfBoundsException.class})
+            public String NullPointerExceptionHandler() {
+                // 略
+            }
+        }
+        ```
+  - Schedule
+    - @EnableScheduling
+    - @Scheduled
+        > Providers: cron, fixedDelay, fixedRate...etc.
+        ```java
+        // 每天中午12 點執行
+        @Scheduled(cron = "0 0 12 * * ?")
+        public void task1() { /* 略 */ }
+        ```
+  - AOP
+    - @Aspec
+    - @Pointcut
+    - @Before
+    - @After
+    - @AfterReturning
+    - @Around
+    - @AfterThrowing
+  - Other
+    - @EnableAsync
+    - @SpringBootTest
+    - @Test
+    - @Transactional
+        ```java
+        @Transactional(rollbackFor = Exception.class)
+        public void method() { /* 略 */}
+        ```
 - [querydsl](http://querydsl.com/)
   - Maven config
     ```xml
@@ -390,3 +533,12 @@
 ### Troubelshooting
 - IntelliJ IDE
   - [Unable to use Intellij with a generated sources folder](https://stackoverflow.com/questions/5170620/unable-to-use-intellij-with-a-generated-sources-folder)
+- Maven
+  - Maven Build Failure
+    - DependencyResolutionException
+      - [Getting "Blocked mirror for repositories" maven error even after adding mirrors](https://stackoverflow.com/questions/67833372/getting-blocked-mirror-for-repositories-maven-error-even-after-adding-mirrors)
+      - [Blocked mirror for repositories error when building from source using Maven 3.8.1 or later](https://backstage.forgerock.com/knowledge/kb/article/a15127846)
+      - [maven编译报错Blocked mirror for repositories解决](https://blog.csdn.net/qq_41980563/article/details/122061818)
+      - [maven - mirrorOf 的坑、多镜像切换（避免一切无厘头报错）](https://blog.nowcoder.net/n/1166815f837244caa74bf9f62c43d04c)
+    - LifecycleExecutionException
+      - [Maven编译失败: zip file is empty](https://blog.csdn.net/jeikerxiao/article/details/109304775)
