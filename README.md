@@ -9,6 +9,7 @@
     - [querydsl](#querydsl)
     - [JPA](#jpa)
     - [AOP](#aop)
+    - [Syntax](#syntax)
   - [DevOps](#devops)
     - [Drone](#drone)
   - [Troubelshooting](#troubelshooting)
@@ -16,7 +17,7 @@
     - [Maven Relevant](#maven-relevant)
 ### Java
 #### Maven
-> [Official](https://maven.apache.org/index.html)  
+> [Official](https://maven.apache.org/index.html)
 > [Tutorial](https://kentyeh.github.io/mavenStartup/)
 - Configuration
     - [Compiler plugin](https://maven.apache.org/plugins/maven-compiler-plugin/index.html)
@@ -119,39 +120,39 @@
     - [Scm plugin](https://maven.apache.org/scm/maven-scm-plugin/)
     - [Profile](https://maven.apache.org/guides/introduction/introduction-to-profiles.html)
 - [Properties](https://books.sonatype.com/mvnref-book/reference/resource-filtering-sect-properties.html)
-    |Property|Describe|
-    |:--|:--|
-    |${basedir}|表示包含pom.xml的目錄路徑|
-    |${version}|程式的版本編號|
-    |${project.build.sourceEncoding}|編碼|
-    |${project.build.directory}|target目錄|
-    |${project.build.outputDirectory}|target/classes目錄|
-    |${project/pom.name}|pom.xml '<name'>所指定的名稱|
-    |${project.build.finalName}|Project的打包名稱|
-    |${env.M2_HOME}|maven安裝目錄|
-    |${java.home}|Java安裝目錄|
+    | Property                         | Describe                     |
+    | :------------------------------- | :--------------------------- |
+    | ${basedir}                       | 表示包含pom.xml的目錄路徑    |
+    | ${version}                       | 程式的版本編號               |
+    | ${project.build.sourceEncoding}  | 編碼                         |
+    | ${project.build.directory}       | target目錄                   |
+    | ${project.build.outputDirectory} | target/classes目錄           |
+    | ${project/pom.name}              | pom.xml '<name'>所指定的名稱 |
+    | ${project.build.finalName}       | Project的打包名稱            |
+    | ${env.M2_HOME}                   | maven安裝目錄                |
+    | ${java.home}                     | Java安裝目錄                 |
 - Lifecycle
     - [clean](https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html#clean-lifecycle)
     - [default](https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html#default-lifecycle)
     - [site](https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html#site-lifecycle)
 - Commonly used commands
-    |Command|Describe|
-    |:--|:--|
-    |mvn clean|進行清理作業，通常是將${project.build.directory} 砍掉|
-    |mvn test|測試程式|
-    |mvn package|打包程式|
-    |mvn install|把Project打包後，放進本地repository|
-    |mvn source:jar javadoc:jar install|把源碼打包，產生文件並打包連同打包的Project一起放進本地repository，把source與文件放進repository，是為了讓IDE工具方便Debug與查看Java Api|
-    |mvn tomcat:run||
-    |mvn source:jar|把source打包成一個jar檔|
-    |mvn javadoc:javadoc|產生java api檔案|
-    |mvn javadoc:jar|產生java api打包檔案|
-    |mvn exec:exec|	執行Project(需進行一些[設定])|
-    |mvn versions:display-dependency-updates|檢查相依函式庫的版本更新狀況|
-    |mvn versions:use-latest-releases|直接將pom.xml內的版本更新到最近一版釋出(會備分舊版的pom.xml)|
-    |mvn versions:display-dependency-updates|檢查函式庫更新狀況|
-    |mvn versions:display-plugin-updates|檢查Plugin的更新狀況|
-    |mvn dependency:tree|查看Library版本|
+    | Command                                 | Describe                                                                                                                                |
+    | :-------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------- |
+    | mvn clean                               | 進行清理作業，通常是將${project.build.directory} 砍掉                                                                                   |
+    | mvn test                                | 測試程式                                                                                                                                |
+    | mvn package                             | 打包程式                                                                                                                                |
+    | mvn install                             | 把Project打包後，放進本地repository                                                                                                     |
+    | mvn source:jar javadoc:jar install      | 把源碼打包，產生文件並打包連同打包的Project一起放進本地repository，把source與文件放進repository，是為了讓IDE工具方便Debug與查看Java Api |
+    | mvn tomcat:run                          |                                                                                                                                         |
+    | mvn source:jar                          | 把source打包成一個jar檔                                                                                                                 |
+    | mvn javadoc:javadoc                     | 產生java api檔案                                                                                                                        |
+    | mvn javadoc:jar                         | 產生java api打包檔案                                                                                                                    |
+    | mvn exec:exec                           | 執行Project(需進行一些[設定])                                                                                                           |
+    | mvn versions:display-dependency-updates | 檢查相依函式庫的版本更新狀況                                                                                                            |
+    | mvn versions:use-latest-releases        | 直接將pom.xml內的版本更新到最近一版釋出(會備分舊版的pom.xml)                                                                            |
+    | mvn versions:display-dependency-updates | 檢查函式庫更新狀況                                                                                                                      |
+    | mvn versions:display-plugin-updates     | 檢查Plugin的更新狀況                                                                                                                    |
+    | mvn dependency:tree                     | 查看Library版本                                                                                                                         |
   - Mirror
     - [Settings](https://maven.apache.org/guides/mini/guide-mirror-settings.html)
         > /usr/local/Cellar/maven/3.8.6/libexec/conf/settings.xml  
@@ -291,7 +292,45 @@
     - @Qualifier
         > Specific when mutiple type declared simultaneously
     - @Value
-  - Exception
+- Cache
+    > [介紹](https://blog.csdn.net/dl962454/article/details/106480438)  
+    > key, cacheNames|value, condition, allEntries, beforeInvocation, cacheManager
+    | 屬性名稱    | 描述                        | 示例                 |
+    | :---------- | :-------------------------- | :------------------- |
+    | parameters  | 參數名稱                    | #user.id             |
+    | page        | 頁數                        | #p0                  |
+    | methodName  | 當前方法名稱                | #root.methodName     |
+    | method      | 當前方法                    | #root.method.name    |
+    | target      | 當前被調用的對象            | #root.target         |
+    | targetClass | 當前被調用的對象的class     | #root.targetClass    |
+    | args        | 當前方法參數組成的數組      | #root.args[0]        |
+    | caches      | 當前被調用的方法使用的Cache | #root.caches[0].name |
+    - @Cacheable
+        > 執行前先檢查，若無則執行並緩存
+    - @CachePut
+        > 直接執行並緩存
+    - @CacheEvict
+        > 執行結束後清除緩存，若 beforeInvocation: true 則執行前先清除, 若 allEntries: true 則清除所有緩存
+    - @Caching
+        > 複合式
+        ```java
+        @Caching(
+            cacheable = {
+                @Cacheable(cacheNames = "example", key = "#str")
+            },
+            put = {
+                @Cacheable(cacheNames = "example", key = "#result.id")
+                @Cacheable(cacheNames = "example", key = "#result.email")
+            },
+            evict = {
+                @Cacheable(cacheNames = "example", allEntries = false, beforeInvocation = true)
+            }
+        )
+        public Employee findByName(string str){
+            return employeeRepository.findByName(str);
+        }
+        ```
+- Exception
     - @ControllerAdvice
         >  @RestControllerAdvice
     - @ExceptionHandler
@@ -464,27 +503,27 @@
         ```
 - Properties
     - CascadeType
-        |Options|Describe|
-        |:--|:--|
-        |CascadeType.PERSIST|在儲存時一併儲存 被參考的物件|
-        |CascadeType.MERGE|在合併修改時一併 合併修改被參考的物件|
-        |CascadeType.REMOVE|在移除時一併移除 被參考的物件|
-        |CascadeType.REFRESH|在更新時一併更新 被參考的物件|
-        |CascadeType.ALL|一併對被參考物件作出對應動作|
+        | Options             | Describe                              |
+        | :------------------ | :------------------------------------ |
+        | CascadeType.PERSIST | 在儲存時一併儲存 被參考的物件         |
+        | CascadeType.MERGE   | 在合併修改時一併 合併修改被參考的物件 |
+        | CascadeType.REMOVE  | 在移除時一併移除 被參考的物件         |
+        | CascadeType.REFRESH | 在更新時一併更新 被參考的物件         |
+        | CascadeType.ALL     | 一併對被參考物件作出對應動作          |
     - FetchType
       - Definition
-        |Options|Describe|
-        |:--|:--|
-        |FetchType.EARGE|立即載入|
-        |FetchType.LAZY|延遲載入|
+        | Options         | Describe |
+        | :-------------- | :------- |
+        | FetchType.EARGE | 立即載入 |
+        | FetchType.LAZY  | 延遲載入 |
       - Default
-        |Relationship|Default|
-        |:--|:--|
-        |@Basic|FetchType.EARGE|
-        |@OneToOne|FetchType.EARGE|
-        |@ManyToOne|FetchType.EARGE|
-        |@OneToMany|FetchType.LAZY|
-        |@ManyToMany|FetchType.LAZY|
+        | Relationship | Default         |
+        | :----------- | :-------------- |
+        | @Basic       | FetchType.EARGE |
+        | @OneToOne    | FetchType.EARGE |
+        | @ManyToOne   | FetchType.EARGE |
+        | @OneToMany   | FetchType.LAZY  |
+        | @ManyToMany  | FetchType.LAZY  |
 #### AOP
   > [切面導向程式設計](https://chikuwa-tech-study.blogspot.com/2021/06/spring-boot-aop-introduction.html)
 
@@ -544,6 +583,79 @@
 
     }
     ```
+#### Syntax
+- ConcurrentHashMap
+    > after jdk 8
+    - KeySet()
+      - Can't usage add(), remove(), ...etc.
+        ```java
+        class ConcurrentSet {
+            public static void main (String[] args) {
+
+                // Creating a concurrent hash map
+                ConcurrentHashMap<String,Integer> demo_map = new ConcurrentHashMap<>();
+
+                demo_map.put("Delftstack",10);
+                demo_map.put("Jack",20);
+                demo_map.put("John", 30);
+                demo_map.put("Mike",40);
+                demo_map.put("Michelle", 50);
+
+                // use keySet() to create a set from the concurrent hashmap
+                Set keyset_conc_set = demo_map.keySet();
+
+                System.out.println("The concurrent set using keySet() function is : " + keyset_conc_set);
+            }
+        }
+
+        // Output:
+        // The concurrent set using keySet() function is : [Michelle, Mike, Delftstack, John, Jack]
+        ```
+    - newKeySet()
+      - avaliable usage add(), remove(), ...etc.
+      - avaliable usage set operations
+        ```java
+        class ConcurrentSet {
+            public static void main (String[] args) {
+                // Create a concurrent set using concorrentHashMap and newkeyset()
+                Set <String> newKeySet_conc_set = ConcurrentHashMap.newKeySet();
+
+                newKeySet_conc_set.add("Mike");
+                newKeySet_conc_set.add("Michelle");
+                newKeySet_conc_set.add("John");
+                newKeySet_conc_set.add("Jack");
+
+                // Print the concurrent set
+                System.out.println("The concurrent set before adding the element: " + newKeySet_conc_set);
+
+                // Add new element
+                newKeySet_conc_set.add("Delftstack");
+
+                // Show the change
+                System.out.println("The concurrent set after adding the element: " + newKeySet_conc_set);
+
+                // Check any element using contains
+                if(newKeySet_conc_set.contains("Delftstack")){
+                    System.out.println("Delftstack is a member of the set");
+                }
+                else{
+                    System.out.println("Delftstack is not a member of the set");
+                }
+                // Remove any element from the concurrent set
+                newKeySet_conc_set.remove("Delftstack");
+                System.out.println("The concurrent set after removing the element:  " + newKeySet_conc_set);
+            }
+        }
+
+        // Output:
+        // The concurrent set before adding the element: [Michelle, Mike, John, Jack]
+        // The concurrent set after adding the element: [Michelle, Mike, Delftstack, John, Jack]
+        // Delftstack is a member of the set
+        // The concurrent set after removing the element:  [Michelle, Mike, John, Jack]
+        ```
+- [parallelStream](https://blog.csdn.net/u011001723/article/details/52794455)
+- [CountDownLatch](https://www.cnblogs.com/Andya/p/12925634.html)
+- [iterator](https://kucw.github.io/blog/2018/12/java-iterator-and-listiterator/)
 
 ### DevOps
 #### [Drone](https://www.drone.io/)
