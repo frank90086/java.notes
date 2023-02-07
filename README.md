@@ -136,23 +136,25 @@
     - [default](https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html#default-lifecycle)
     - [site](https://maven.apache.org/guides/introduction/introduction-to-the-lifecycle.html#site-lifecycle)
 - Commonly used commands
-    | Command                                 | Describe                                                                                                                                |
-    | :-------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------- |
-    | mvn clean                               | 進行清理作業，通常是將${project.build.directory} 砍掉                                                                                   |
-    | mvn test                                | 測試程式                                                                                                                                |
-    | mvn package                             | 打包程式                                                                                                                                |
-    | mvn install                             | 把Project打包後，放進本地repository                                                                                                     |
-    | mvn source:jar javadoc:jar install      | 把源碼打包，產生文件並打包連同打包的Project一起放進本地repository，把source與文件放進repository，是為了讓IDE工具方便Debug與查看Java Api |
-    | mvn tomcat:run                          |                                                                                                                                         |
-    | mvn source:jar                          | 把source打包成一個jar檔                                                                                                                 |
-    | mvn javadoc:javadoc                     | 產生java api檔案                                                                                                                        |
-    | mvn javadoc:jar                         | 產生java api打包檔案                                                                                                                    |
-    | mvn exec:exec                           | 執行Project(需進行一些[設定])                                                                                                           |
-    | mvn versions:display-dependency-updates | 檢查相依函式庫的版本更新狀況                                                                                                            |
-    | mvn versions:use-latest-releases        | 直接將pom.xml內的版本更新到最近一版釋出(會備分舊版的pom.xml)                                                                            |
-    | mvn versions:display-dependency-updates | 檢查函式庫更新狀況                                                                                                                      |
-    | mvn versions:display-plugin-updates     | 檢查Plugin的更新狀況                                                                                                                    |
-    | mvn dependency:tree                     | 查看Library版本                                                                                                                         |
+    | Command                                                  | Describe                                                                                                                                |
+    | :------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------- |
+    | mvn clean                                                | 進行清理作業，通常是將${project.build.directory} 砍掉                                                                                   |
+    | mvn test                                                 | 測試程式                                                                                                                                |
+    | mvn package                                              | 打包程式                                                                                                                                |
+    | mvn install                                              | 把Project打包後，放進本地repository                                                                                                     |
+    | mvn source:jar javadoc:jar install                       | 把源碼打包，產生文件並打包連同打包的Project一起放進本地repository，把source與文件放進repository，是為了讓IDE工具方便Debug與查看Java Api |
+    | mvn tomcat:run                                           |                                                                                                                                         |
+    | mvn source:jar                                           | 把source打包成一個jar檔                                                                                                                 |
+    | mvn javadoc:javadoc                                      | 產生java api檔案                                                                                                                        |
+    | mvn javadoc:jar                                          | 產生java api打包檔案                                                                                                                    |
+    | mvn exec:exec                                            | 執行Project(需進行一些[設定])                                                                                                           |
+    | mvn versions:display-dependency-updates                  | 檢查相依函式庫的版本更新狀況                                                                                                            |
+    | mvn versions:use-latest-releases                         | 直接將pom.xml內的版本更新到最近一版釋出(會備分舊版的pom.xml)                                                                            |
+    | mvn versions:display-dependency-updates                  | 檢查函式庫更新狀況                                                                                                                      |
+    | mvn versions:display-plugin-updates                      | 檢查Plugin的更新狀況                                                                                                                    |
+    | mvn dependency:tree                                      | 查看Library版本                                                                                                                         |
+    | mvn dependency:resolve                                   | 重新下載dependency                                                                                                                      |
+    | mvn dependency:get -Dartifact=groupId:artifactId:version | 下載指定的dependency                                                                                                                    |
   - Mirror
     - [Settings](https://maven.apache.org/guides/mini/guide-mirror-settings.html)
         > /usr/local/Cellar/maven/3.8.6/libexec/conf/settings.xml  
@@ -185,7 +187,7 @@
         ```
 #### [lombok]()
 > [Commercail](https://projectlombok.org/)
-  - [五分鐘學會 Lombok 用法](https://matthung0807.blogspot.com/2020/12/mac-homebrew-intall-maven.html)
+  - [五分鐘學會 Lombok 用法](https://kucw.github.io/blog/2020/3/java-lombok/)
 #### Annotation
     > [Spring Boot 常用註釋(上)](https://ithelp.ithome.com.tw/articles/10269631)  
     > [Spring Boot 常用註釋(下)](https://ithelp.ithome.com.tw/articles/10270418)
@@ -524,6 +526,36 @@
         | @ManyToOne   | FetchType.EARGE |
         | @OneToMany   | FetchType.LAZY  |
         | @ManyToMany  | FetchType.LAZY  |
+- Repository
+    > [JPA Repositories](https://docs.spring.io/spring-data/jpa/docs/1.6.0.RELEASE/reference/html/jpa.repositories.html)
+
+    - Keywords
+        | Keyword           | Sample                                                  | JPQL snippet                                                   |
+        | :---------------- | :------------------------------------------------------ | :------------------------------------------------------------- |
+        | And               | findByLastnameAndFirstname                              | … where x.lastname = ?1 and x.firstname = ?2                   |
+        | Or                | findByLastnameOrFirstname                               | … where x.lastname = ?1 or x.firstname = ?2                    |
+        | Is,Equals         | findByFirstname,findByFirstnameIs,findByFirstnameEquals | … where x.firstname = 1?                                       |
+        | Between           | findByStartDateBetween                                  | … where x.startDate between 1? and ?2                          |
+        | LessThan          | findByAgeLessThan                                       | … where x.age < ?1                                             |
+        | LessThanEqual     | findByAgeLessThanEqual                                  | … where x.age <= ?1                                            |
+        | GreaterThan       | findByAgeGreaterThan                                    | … where x.age > ?1                                             |
+        | GreaterThanEqual  | findByAgeGreaterThanEqual                               | … where x.age >= ?1                                            |
+        | After             | findByStartDateAfter                                    | … where x.startDate > ?1                                       |
+        | Before            | findByStartDateBefore                                   | … where x.startDate < ?1                                       |
+        | IsNull            | findByAgeIsNull                                         | … where x.age is null                                          |
+        | IsNotNull,NotNull | findByAge(Is)NotNull                                    | … where x.age not null                                         |
+        | Like              | findByFirstnameLike                                     | … where x.firstname like ?1                                    |
+        | NotLike           | findByFirstnameNotLike                                  | … where x.firstname not like ?1                                |
+        | StartingWith      | findByFirstnameStartingWith                             | … where x.firstname like ?1 (parameter bound with appended %)  |
+        | EndingWith        | findByFirstnameEndingWith                               | … where x.firstname like ?1 (parameter bound with prepended %) |
+        | Containing        | findByFirstnameContaining                               | … where x.firstname like ?1 (parameter bound wrapped in %)     |
+        | OrderBy           | findByAgeOrderByLastnameDesc                            | … where x.age = ?1 order by x.lastname desc                    |
+        | Not               | findByLastnameNot                                       | … where x.lastname <> ?1                                       |
+        | In                | findByAgeIn(Collection<Age> ages)                       | … where x.age in ?1                                            |
+        | NotIn             | findByAgeNotIn(Collection<Age> age)                     | … where x.age not in ?1                                        |
+        | True              | findByActiveTrue()                                      | … where x.active = true                                        |
+        | False             | findByActiveFalse()                                     | … where x.active = false                                       |
+        | IgnoreCase        | findByFirstnameIgnoreCase                               | … where UPPER(x.firstame) = UPPER(?1)                          |
 #### AOP
   > [切面導向程式設計](https://chikuwa-tech-study.blogspot.com/2021/06/spring-boot-aop-introduction.html)
 
