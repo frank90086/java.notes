@@ -10,6 +10,8 @@
     - [JPA](#jpa)
     - [AOP](#aop)
     - [Syntax](#syntax)
+  - [Repository](#repository)
+    - [Nexus](#nexus)
   - [DevOps](#devops)
     - [Drone](#drone)
   - [Troubelshooting](#troubelshooting)
@@ -157,9 +159,22 @@
     | mvn dependency:get -Dartifact=groupId:artifactId:version | 下載指定的dependency                                                                                                                    |
   - Mirror
     - [Settings](https://maven.apache.org/guides/mini/guide-mirror-settings.html)
-        > /usr/local/Cellar/maven/3.8.6/libexec/conf/settings.xml  
+        > /usr/local/Cellar/maven/3.9.0/libexec/conf/settings.xml  
         > ~/.m2/settings.xml
         ```xml
+        <servers>
+            <server>
+                <id>nexus</id>
+                <username>{username}</username>
+                <password>{password}</password>
+            </server>
+            <server>
+                <id>localhost</id>
+                <username>{username}</username>
+                <password>{password}</password>
+            </server>
+        </servers>
+
         <mirrors>
             <mirror>
                 <id>maven-default-http-blocker</id>
@@ -171,8 +186,15 @@
             <mirror>
                 <id>nexus</id>
                 <mirrorOf>central</mirrorOf>
-                <name>nexus</name>
+                <name>Remote Nexus</name>
                 <url>http://52.69.65.57/repository/backend-maven-all/</url>
+                <blocked>false</blocked>
+            </mirror>
+            <mirror>
+                <id>localhost</id>
+                <mirrorOf>*</mirrorOf>
+                <name>Localhost Nexus</name>
+                <url>http://127.0.0.1:8081/repository/maven-public/</url>
                 <blocked>false</blocked>
             </mirror>
         </mirrors>
@@ -184,6 +206,21 @@
         repo,repo1 = repo or repo1
         *,!repo1 = everything except repo1
         central = default repository
+        ```
+    - pom.xml
+        ```xml
+        <distributionManagement>
+            <repository>
+                <id>localhost</id>
+                <name>Releases Repository</name>
+                <url>http://localhost:8081/repository/maven-releases</url>
+            </repository>
+            <snapshotRepository>
+                <id>localhost</id>
+                <name>Snapshot Repository</name>
+                <url>http://localhost:8081/repository/maven-snapshots</url>
+            </snapshotRepository>
+        </distributionManagement>
         ```
 #### [lombok]()
 > [Commercail](https://projectlombok.org/)
@@ -688,7 +725,44 @@
 - [parallelStream](https://blog.csdn.net/u011001723/article/details/52794455)
 - [CountDownLatch](https://www.cnblogs.com/Andya/p/12925634.html)
 - [iterator](https://kucw.github.io/blog/2018/12/java-iterator-and-listiterator/)
+### Repository
+#### Nexus
+  - [Installation In Docker](https://hub.docker.com/r/sonatype/nexus3/)
+    > default account - admin:{./vol/data/admin.password}
+    ```yml
+    version: "3.7"
+    services:
+        nexus:
+            restart: always
+            image: sonatype/nexus3
+            container_name: nexus
+            ports:
+            - 6005:8081
+            - 8082:8082
+            volumes:
+            - ./vol/data:/nexus-data
+    networks:
+        default:
+            external:
+                name: dev
+    ```
+  - Useful Commands
+    ```cmd
+    # docker cli
+    docker login -u admin -p localhost:8082
+    docker tag {image:version} localhost:8082/{image:version}
+    docker push localhost:8082/{image:version}
 
+    # mvnw
+    ## [build image](https://github.com/GoogleContainerTools/jib/tree/master/jib-maven-plugin#build-your-image)
+    ./mvnw -DactiveProfiles=docker -DsendCredentialsOverHttp=true compile jib:build
+
+    ## [build to Docker daemon](https://github.com/GoogleContainerTools/jib/tree/master/jib-maven-plugin#build-to-docker-daemon)
+    ./mvnw -DactiveProfiles=docker compile jib:dockerBuild
+
+    ## [build an image tarball](https://github.com/GoogleContainerTools/jib/tree/master/jib-maven-plugin#build-an-image-tarball)
+    ./mvnw -DactiveProfiles=docker compile jib:buildTar; \docker load < target/jib-image.tar;
+    ```
 ### DevOps
 #### [Drone](https://www.drone.io/)
   - [從零開始學 DevOps — 那就選擇最簡單的 Drone CI 開始吧！](https://medium.com/starbugs/%E5%BE%9E%E9%9B%B6%E9%96%8B%E5%A7%8B%E5%AD%B8-devops-%E9%82%A3%E5%B0%B1%E9%81%B8%E6%93%87%E6%9C%80%E7%B0%A1%E5%96%AE%E7%9A%84-drone-ci-%E9%96%8B%E5%A7%8B%E5%90%A7-931126671139)
