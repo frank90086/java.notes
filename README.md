@@ -722,6 +722,159 @@
         // Delftstack is a member of the set
         // The concurrent set after removing the element:  [Michelle, Mike, John, Jack]
         ```
+- Sha256WithRsa
+    - class
+    ```java
+        package tutorial.security;
+
+        import java.security.Key;
+        import java.security.KeyPair;
+        import java.security.KeyPairGenerator;
+        import java.security.SecureRandom;
+        import org.springframework.beans.factory.annotation.Value;
+        import org.springframework.stereotype.Component;
+
+        import javax.crypto.BadPaddingException;
+        import javax.crypto.Cipher;
+        import javax.crypto.IllegalBlockSizeException;
+        import javax.crypto.NoSuchPaddingException;
+        import java.nio.charset.StandardCharsets;
+        import java.security.InvalidKeyException;
+        import java.security.KeyFactory;
+        import java.security.NoSuchAlgorithmException;
+        import java.security.PrivateKey;
+        import java.security.PublicKey;
+        import java.security.Signature;
+        import java.security.SignatureException;
+        import java.security.spec.InvalidKeySpecException;
+        import java.security.spec.PKCS8EncodedKeySpec;
+        import java.security.spec.X509EncodedKeySpec;
+        import java.util.Base64;
+
+        @Component
+        public class RSAUtil {
+
+            private static SecureRandom random = new SecureRandom();
+
+            public String generateSignature_Sha1withRSA(String plaintext, String privateKeyStr)
+                    throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, InvalidKeySpecException {
+                PrivateKey privateKey = getPrivateKey(privateKeyStr);
+                return generateSignature("SHA1withRSA", plaintext, privateKey);
+            }
+
+            public String generateSignature_Sha256withRSA(String plaintext, String privateKeyStr)
+                throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, InvalidKeySpecException {
+                PrivateKey privateKey = getPrivateKey(privateKeyStr);
+                return generateSignature("SHA256withRSA", plaintext, privateKey);
+            }
+
+            private String generateSignature(String algorithms, String plaintext, PrivateKey privateKey)
+                    throws NoSuchAlgorithmException, InvalidKeyException, SignatureException, InvalidKeySpecException {
+                Signature signature = Signature.getInstance(algorithms);
+                signature.initSign(privateKey);
+                signature.update(plaintext.getBytes(StandardCharsets.UTF_8));
+                byte[] signData = signature.sign();
+
+                return Base64.getEncoder().encodeToString(signData);
+            }
+
+            public boolean verifySignature_Sha1withRSA(String signature, String originText, String publicKeyStr)
+                    throws InvalidKeySpecException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+                PublicKey publicKey = getPublicKey(publicKeyStr);
+                return verifySignature("SHA1withRSA", signature, originText, publicKey);
+            }
+
+            public boolean verifySignature_Sha256withRSA(String signature, String originText, String publicKeyStr)
+                throws InvalidKeySpecException, NoSuchAlgorithmException, InvalidKeyException, SignatureException {
+                PublicKey publicKey = getPublicKey(publicKeyStr);
+                return verifySignature("SHA256withRSA", signature, originText, publicKey);
+            }
+
+            private boolean verifySignature(String algorithms, String signature, String originText, PublicKey publicKey)
+                    throws InvalidKeySpecException, NoSuchAlgorithmException, InvalidKeyException, SignatureException  {
+                Signature publicSignature = Signature.getInstance(algorithms);
+                publicSignature.initVerify(publicKey);
+                publicSignature.update(originText.getBytes(StandardCharsets.UTF_8));
+
+                byte[] signatureBytes = Base64.getDecoder().decode(signature);
+                return publicSignature.verify(signatureBytes);
+            }
+
+            public KeyPair generateKeyPair()
+                    throws NoSuchAlgorithmException {
+                return generateKeyPair(new SecureRandom());
+            }
+
+            public KeyPair generateKeyPair(String seed)
+                    throws NoSuchAlgorithmException {
+                random.setSeed(seed.getBytes());
+                return generateKeyPair(random);
+            }
+
+            private KeyPair generateKeyPair(SecureRandom random)
+                    throws NoSuchAlgorithmException {
+                KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+                keyPairGenerator.initialize(2048, random);
+                return keyPairGenerator.generateKeyPair();
+            }
+
+            private PublicKey getPublicKey(String publicKeyStr) throws NoSuchAlgorithmException, InvalidKeySpecException {
+                byte[] keyBytes = Base64.getDecoder().decode(publicKeyStr.getBytes(StandardCharsets.UTF_8));
+                X509EncodedKeySpec spec = new X509EncodedKeySpec(keyBytes);
+                KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+
+                return keyFactory.generatePublic(spec);
+            }
+
+            private PrivateKey getPrivateKey(String privateKeyStr) throws NoSuchAlgorithmException, InvalidKeySpecException {
+                byte[] pkcs8EncodedBytes = Base64.getDecoder().decode(privateKeyStr.getBytes(StandardCharsets.UTF_8));
+                PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(pkcs8EncodedBytes);
+                KeyFactory kf = KeyFactory.getInstance("RSA");
+
+                return kf.generatePrivate(keySpec);
+            }
+
+            public String convertToBase64(Key key) {
+                byte[] keyBytes = key.getEncoded();
+                return Base64.getEncoder().encodeToString(keyBytes);
+            }
+
+            public String convertToPEM(Key key) {
+                byte[] keyBytes = key.getEncoded();
+                String base64PublicKey = Base64.getEncoder().encodeToString(keyBytes);
+
+                return splitPEMString(base64PublicKey, 64);
+            }
+
+            private static String splitPEMString(String input, int splitLength) {
+                StringBuilder output = new StringBuilder();
+                int index = 0;
+                while (index < input.length()) {
+                    output.append(input.substring(index, Math.min(index + splitLength, input.length())));
+                    output.append("\n");
+                    index += splitLength;
+                }
+                return output.toString();
+            }
+        }
+    ```
+    - used
+    ```java
+        KeyPair kp = rsaUtil.generateKeyPair(preorderReq.getMerchantCode());
+        PrivateKey privateKey = kp.getPrivate();
+        PublicKey publicKey = kp.getPublic();
+
+        System.out.println("RSA Public Key: " + publicKey);
+        System.out.println("RSA Private Key: " + privateKey);
+
+        String test = JSONUtil.stringify(preorderReq);
+
+        String sign = rsaUtil.generateSignature_Sha256withRSA(test, rsaUtil.convertToBase64(privateKey));
+        boolean verify = rsaUtil.verifySignature_Sha256withRSA(sign, test, rsaUtil.convertToBase64(publicKey));
+
+        System.out.println("Sign: " + sign);
+        System.out.println("Verify: " + verify);
+    ```
 - [parallelStream](https://blog.csdn.net/u011001723/article/details/52794455)
 - [CountDownLatch](https://www.cnblogs.com/Andya/p/12925634.html)
 - [iterator](https://kucw.github.io/blog/2018/12/java-iterator-and-listiterator/)
